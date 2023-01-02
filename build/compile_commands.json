@@ -1,0 +1,32 @@
+[
+  {
+    "directory": "/home/byunghun/workspace/optic/build",
+    "command": "cc -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -MD -MQ 'pr_first@exe/main.c.o' -MF 'pr_first@exe/main.c.o.d' -o 'pr_first@exe/main.c.o' -c ../main.c",
+    "file": "../main.c",
+    "output": "pr_first@exe/main.c.o"
+  },
+  {
+    "directory": "/home/byunghun/workspace/optic/build",
+    "command": "cc -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -MD -MQ 'pr_first@exe/optic_collision_object.c.o' -MF 'pr_first@exe/optic_collision_object.c.o.d' -o 'pr_first@exe/optic_collision_object.c.o' -c ../optic_collision_object.c",
+    "file": "../optic_collision_object.c",
+    "output": "pr_first@exe/optic_collision_object.c.o"
+  },
+  {
+    "directory": "/home/byunghun/workspace/optic/build",
+    "command": "cc -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -MD -MQ 'pr_first@exe/optic_object.c.o' -MF 'pr_first@exe/optic_object.c.o.d' -o 'pr_first@exe/optic_object.c.o' -c ../optic_object.c",
+    "file": "../optic_object.c",
+    "output": "pr_first@exe/optic_object.c.o"
+  },
+  {
+    "directory": "/home/byunghun/workspace/optic/build",
+    "command": "cc -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -MD -MQ 'pr_first@exe/optic_point.c.o' -MF 'pr_first@exe/optic_point.c.o.d' -o 'pr_first@exe/optic_point.c.o' -c ../optic_point.c",
+    "file": "../optic_point.c",
+    "output": "pr_first@exe/optic_point.c.o"
+  },
+  {
+    "directory": "/home/byunghun/workspace/optic/build",
+    "command": "cc -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -MD -MQ 'pr_first@exe/optic_vector.c.o' -MF 'pr_first@exe/optic_vector.c.o.d' -o 'pr_first@exe/optic_vector.c.o' -c ../optic_vector.c",
+    "file": "../optic_vector.c",
+    "output": "pr_first@exe/optic_vector.c.o"
+  }
+]
