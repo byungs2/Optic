@@ -18,7 +18,7 @@ main (int argc, char *agrv[])
 
   time = g_get_real_time ();
   for (iter = 0; iter < max_iter; iter++) {
-    dist = optic_point_distance_256 (self, other);
+    dist = optic_point_distance (self, other);
   }
   diff2 = ((g_get_real_time () - time)/1000.0);
   g_print ("AVX 256 TIME %f, dist : %f\n", diff2, dist);

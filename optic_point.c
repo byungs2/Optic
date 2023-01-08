@@ -107,7 +107,7 @@ optic_point_init (OpticPoint *instance)
 }
 
 gfloat 
-optic_point_distance_256 (OpticPoint *self, OpticPoint *other)
+optic_point_distance (OpticPoint *self, OpticPoint *other)
 {
   gint i, j, iter = { 0, };
   gfloat res = 0;
@@ -139,17 +139,6 @@ optic_point_distance_256 (OpticPoint *self, OpticPoint *other)
   }
   
   return sqrt(res);
-}
-
-gfloat 
-optic_point_distance (OpticPoint *self, OpticPoint *other)
-{
-  gint i;
-  gfloat distance = 0.0;
-  for (i = 0; i < self->dim_size; i++) {
-    distance += pow((self->dim[i] - other->dim[i]), 2);
-  }
-  return sqrt(distance);
 }
 
 void 

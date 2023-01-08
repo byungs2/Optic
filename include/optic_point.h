@@ -33,8 +33,6 @@ struct _OpticPoint {
 GType optic_point_get_type (void);
 
 /* cal euclidean distance */
-gfloat optic_point_distance_256 (OpticPoint *self, OpticPoint *other);
-
 gfloat optic_point_distance (OpticPoint *self, OpticPoint *other); 
 
 void optic_point_mul (OpticPoint *self, gfloat constant);
