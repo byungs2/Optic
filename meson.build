@@ -14,7 +14,8 @@ warning_flags = [
   '-Wno-unused-but-set-variable',
   '-Wno-int-conversion',
   '-Wno-unused-variable',
-  '-Wno-comment'
+  '-Wno-comment',
+  '-mavx'
 ]
 
 cc = meson.get_compiler('cpp')

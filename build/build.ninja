@@ -38,23 +38,23 @@ build PHONY: phony
 
 build pr_first@exe/main.c.o: c_COMPILER ../main.c
  DEPFILE = pr_first@exe/main.c.o.d
- ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment
+ ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -mavx
 
 build pr_first@exe/optic_collision_object.c.o: c_COMPILER ../optic_collision_object.c
  DEPFILE = pr_first@exe/optic_collision_object.c.o.d
- ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment
+ ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -mavx
 
 build pr_first@exe/optic_object.c.o: c_COMPILER ../optic_object.c
  DEPFILE = pr_first@exe/optic_object.c.o.d
- ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment
+ ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -mavx
 
 build pr_first@exe/optic_point.c.o: c_COMPILER ../optic_point.c
  DEPFILE = pr_first@exe/optic_point.c.o.d
- ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment
+ ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -mavx
 
 build pr_first@exe/optic_vector.c.o: c_COMPILER ../optic_vector.c
  DEPFILE = pr_first@exe/optic_vector.c.o.d
- ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment
+ ARGS = -Ipr_first@exe -I. -I.. -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -Wno-unused-parameter -D_GLIBCXX_USE_CXX11_ABI=1 -Wno-unused-but-set-variable -Wno-int-conversion -Wno-unused-variable -Wno-comment -mavx
 
 build pr_first: c_LINKER pr_first@exe/main.c.o pr_first@exe/optic_collision_object.c.o pr_first@exe/optic_object.c.o pr_first@exe/optic_point.c.o pr_first@exe/optic_vector.c.o | /usr/lib/x86_64-linux-gnu/libglib-2.0.so /usr/lib/x86_64-linux-gnu/libgobject-2.0.so
  LINK_ARGS = -Wl,--as-needed -Wl,--no-undefined -Wl,--no-as-needed,-lm -Wl,--start-group /usr/lib/x86_64-linux-gnu/libglib-2.0.so /usr/lib/x86_64-linux-gnu/libgobject-2.0.so -Wl,--end-group

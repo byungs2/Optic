@@ -1,6 +1,8 @@
 #include <math.h>
-#include <xmmintrin.h>
+#include <malloc.h>
+#include <immintrin.h>
 #include "include/optic_point.h"
+
 G_DEFINE_TYPE (OpticPoint, optic_point, OPTIC_TYPE_OBJECT)
 
 enum {
@@ -36,9 +38,7 @@ optic_point_set_property (GObject *object,
     case PROP_DIM_NUM:
       self->dim_size = g_value_get_int (value);
       g_free (self->dim);
-      self->padded_size = 
-        self->dim_size % 4 == 0 ? (self->dim_size / 4) : (self->dim_size / 4) + 1;
-      self->dim = (gfloat *)g_malloc0 (sizeof(gfloat) * self->padded_size * 4);
+      self->dim = (gfloat *)g_malloc0 (self->dim_size * sizeof(gfloat));
       break;
     case PROP_DIM_POINT_VALS:
       seq = g_value_get_pointer (value);
@@ -102,52 +102,50 @@ static void
 optic_point_init (OpticPoint *instance)
 {
   instance->dim_size = 3;
-  instance->padded_size = 4;
   instance->dtype = G_TYPE_FLOAT;
-  instance->dim = g_malloc0 (sizeof(gfloat) * instance->padded_size); /* padding for SIMD */
+  instance->dim = g_malloc0 (sizeof(gfloat) * instance->dim_size);
 }
 
 gfloat 
-optic_point_distance_sse (OpticPoint *self, OpticPoint *other)
+optic_point_distance_256 (OpticPoint *self, OpticPoint *other)
 {
-  size_t word = 0;
-  gint i, j, iter;
-  gfloat distance = 0;
-  gfloat *tmp_self, *tmp_other;
-  __m128 self_point, other_point, dest;
+  gint i, j, iter = { 0, };
+  gfloat res = 0;
+  gfloat *tmp_self, *tmp_other = { NULL, };
+  __m256 self_point, other_point, dest, distance;
 
   g_assert (self->dim_size == other->dim_size 
-      && self->dim != NULL && other->dim != NULL);
+      && self->dim != NULL && other->dim != NULL 
+      );
 
-  word = sizeof(gfloat);
-  iter = self->padded_size;
+  iter = (self->dim_size + 7)/8;
+
   tmp_self = (gfloat *)self->dim;
   tmp_other = (gfloat *)other->dim;
+  distance = _mm256_set1_ps (0.0);
 
-  /* TODO atomic pointer add, threadpool 
-   * How numpy can be faster than this? */
   for (i = 0; i < iter; i++) {
-    self_point = _mm_load_ps (tmp_self);
-    other_point = _mm_load_ps (tmp_other);
-  
-    dest = _mm_sub_ps (self_point, other_point);
-    dest = _mm_mul_ps (dest, dest);
+    self_point = _mm256_loadu_ps (tmp_self);
+    other_point = _mm256_loadu_ps (tmp_other);
+    dest = _mm256_sub_ps (self_point, other_point);
+    dest = _mm256_mul_ps (dest, dest);
+    distance = _mm256_add_ps (dest, distance);
 
-    for (j = 0; j < word; j++) {
-      distance += ((gfloat *)&dest)[j];
-    }
-    tmp_self += word;
-    tmp_other += word;
+    tmp_self += 8;
+    tmp_other += 8;
+  }
+  for (j = 0; j < 8; j++) {
+    res += ((gfloat *)&distance)[j];
   }
   
-  return sqrt(distance);
+  return sqrt(res);
 }
 
 gfloat 
 optic_point_distance (OpticPoint *self, OpticPoint *other)
 {
   gint i;
-  gfloat distance;
+  gfloat distance = 0.0;
   for (i = 0; i < self->dim_size; i++) {
     distance += pow((self->dim[i] - other->dim[i]), 2);
   }
