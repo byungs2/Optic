@@ -8,20 +8,19 @@ project('pr_first', 'c', 'cpp',
   ]
 )
 
-warning_flags = [
+compile_flags = [
   '-Wno-unused-parameter',
   '-D_GLIBCXX_USE_CXX11_ABI=1',
   '-Wno-unused-but-set-variable',
   '-Wno-int-conversion',
   '-Wno-unused-variable',
-  '-Wno-comment',
-  '-mavx'
+  '-Wno-comment'
 ]
 
 cc = meson.get_compiler('cpp')
 c = meson.get_compiler('c')
 
-foreach arg : warning_flags
+foreach arg : compile_flags
   if cc.has_argument (arg)
     add_project_arguments([arg], language: 'cpp')
   endif
@@ -37,8 +36,7 @@ pr_first = executable('pr_first',
   'main.c',
   'optic_collision_object.c',
   'optic_object.c',
-  'optic_point.c',
-  'optic_vector.c',
+  'optic_tensor.c',
   dependencies : [
     glib,
     gobject
@@ -46,7 +44,8 @@ pr_first = executable('pr_first',
   #link_with : [],
   #install : false,
   #install_dir : '/home/byunghun/workspace/gobject_tester',
-  link_args : '-Wl,--no-as-needed,-lm'
+  link_args : '-Wl,--no-as-needed,-lm',
+  c_args : ['-mavx', '-O3']
   )
 
 test('basic', pr_first)
