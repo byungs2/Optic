@@ -26,8 +26,8 @@ struct _OpticTensorClass {
 struct _OpticTensor {
   OpticObject parent_instance;
   gfloat *tensor; /* for now only takes float */
-  guint *shape;
-  guint length;
+  guint64 *shape;
+  guint64 length;
   guint dim_size;
   guint dtype;
 };

@@ -7,9 +7,9 @@ G_DEFINE_TYPE (OpticTensor, optic_tensor, OPTIC_TYPE_OBJECT)
 
 enum {
   PROP_0 = 0,
-  PROP_TENSOR_TYPE,
   PROP_TENSOR_DIM,
   PROP_TENSOR_SHAPE,
+  PROP_TENSOR_TYPE,
   PROP_TENSOR_DATA
 };
 
@@ -42,7 +42,7 @@ optic_tensor_set_property (GObject *object,
         g_free (self->shape);
         self->shape = NULL;
       }
-      self->shape = (guint *)malloc (sizeof(guint) * self->dim_size);
+      self->shape = (guint64 *)g_malloc0 (sizeof(guint64) * self->dim_size);
       break;
     case PROP_TENSOR_DATA:
       pointer = g_value_get_pointer (value);
@@ -50,7 +50,11 @@ optic_tensor_set_property (GObject *object,
         g_free (self->tensor);
         self->tensor = NULL;
       }
-      self->tensor = (gfloat *)g_malloc0 (self->length * sizeof(gfloat));
+      /* TODO maximum single malloc size is INT 
+       * need to make fragment of tensor array
+       * as its shape
+       * */
+      self->tensor = (gfloat *)g_malloc0 (sizeof(gfloat) * self->length);
       if (pointer != NULL) {
         for (i = 0; i < self->length; i++) {
           self->tensor[i] = ((gfloat *)pointer)[i];
@@ -61,7 +65,7 @@ optic_tensor_set_property (GObject *object,
       pointer = g_value_get_pointer (value);
       self->length = 1;
       for (i = 0; i < self->dim_size; i++) {
-        self->shape[i] = ((guint *)pointer)[i];
+        self->shape[i] = ((guint64 *)pointer)[i];
         self->length *= self->shape[i];
       }
       break;
@@ -133,6 +137,7 @@ optic_tensor_init (OpticTensor *instance)
   instance->tensor = NULL;
 }
 
+/* TODO need to remove padding float bytes */
 gfloat 
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {

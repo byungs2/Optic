@@ -3,14 +3,15 @@
 int
 main (int argc, char *agrv[])
 {
-  gint64 iter, time, max_iter, max_dim;
+  gint64 time, max_dim;
   gfloat diff1, diff2, dist;
-  guint shape[3] = { 1000, 5, 10 };
+  guint64 shape[1] = { 960 * 540 };
+  guint64 max_iter, iter;
   OpticTensor *self = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
 
-  max_dim = 3;
-  max_iter = 100000;
+  max_dim = 1;
+  max_iter = 50 * 70 * 3;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,
