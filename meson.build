@@ -46,6 +46,7 @@ pr_first = executable('pr_first',
   #install_dir : '/home/byunghun/workspace/gobject_tester',
   link_args : '-Wl,--no-as-needed,-lm',
   c_args : ['-mavx', '-O3']
+  #c_args : ['-mavx']
   )
 
 test('basic', pr_first)
