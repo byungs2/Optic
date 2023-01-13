@@ -1,4 +1,5 @@
 #include "include/optic_tensor.h"
+#include "include/optic_queue.h"
 
 int
 main (int argc, char *agrv[])
@@ -9,6 +10,7 @@ main (int argc, char *agrv[])
   guint64 max_iter, iter;
   OpticTensor *self = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
+  OpticQueue *queue = g_object_new (OPTIC_TYPE_QUEUE, NULL);
 
   max_dim = 1;
   max_iter = 50 * 70 * 3;

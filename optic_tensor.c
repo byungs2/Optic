@@ -1,5 +1,4 @@
 #include <math.h>
-#include <malloc.h>
 #include <immintrin.h>
 #include "include/optic_tensor.h"
 

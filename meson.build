@@ -37,6 +37,8 @@ pr_first = executable('pr_first',
   'optic_collision_object.c',
   'optic_object.c',
   'optic_tensor.c',
+  'optic_threadpool.c',
+  'optic_queue.c',
   dependencies : [
     glib,
     gobject
@@ -45,8 +47,8 @@ pr_first = executable('pr_first',
   #install : false,
   #install_dir : '/home/byunghun/workspace/gobject_tester',
   link_args : '-Wl,--no-as-needed,-lm',
-  c_args : ['-mavx', '-O3']
-  #c_args : ['-mavx']
+  #c_args : ['-mavx', '-O3']
+  c_args : ['-mavx']
   )
 
 test('basic', pr_first)
