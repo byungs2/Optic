@@ -62,7 +62,9 @@ gpointer
 optic_queue_pop (OpticQueue *queue)
 {
   gpointer data = NULL;
-  g_assert (queue->head != queue->tail);
+  if (queue->head == queue->tail) {
+    return NULL;
+  }
   data = queue->queue[queue->head];
   queue->queue[queue->head] = NULL;
   queue->head = (queue->head + 1)%MAX_QUEUE_SIZE;

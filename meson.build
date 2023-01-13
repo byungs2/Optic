@@ -31,6 +31,7 @@ endforeach
 
 glib = dependency('glib-2.0')
 gobject = dependency('gobject-2.0')
+threads = dependency('threads')
 
 pr_first = executable('pr_first',
   'main.c',
@@ -41,7 +42,8 @@ pr_first = executable('pr_first',
   'optic_queue.c',
   dependencies : [
     glib,
-    gobject
+    gobject,
+    threads
     ],
   #link_with : [],
   #install : false,

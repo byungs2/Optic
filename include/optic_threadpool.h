@@ -4,6 +4,7 @@
 #include "common.h"
 #include "optic_object.h"
 #include "optic_queue.h"
+#include <pthread.h>
 
 G_BEGIN_DECLS
 
@@ -37,10 +38,12 @@ struct _OpticThreadPool {
 
 struct _OpticThreadPoolWork {
   FUNCPTR work;
-  gpointer *arg;
+  gpointer arg;
 };
 
 GType optic_threadpool_get_type (void);
+
+void optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork *work);
 
 G_END_DECLS
 #endif

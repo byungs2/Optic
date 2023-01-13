@@ -1,19 +1,20 @@
 #include "include/optic_tensor.h"
 #include "include/optic_queue.h"
+#include "include/optic_threadpool.h"
 
 int
 main (int argc, char *agrv[])
 {
   gint64 time, max_dim;
   gfloat diff1, diff2, dist;
-  guint64 shape[1] = { 960 * 540 };
+  guint64 shape[1] = { 50000 };
   guint64 max_iter, iter;
   OpticTensor *self = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
-  OpticQueue *queue = g_object_new (OPTIC_TYPE_QUEUE, NULL);
+  OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
 
   max_dim = 1;
-  max_iter = 50 * 70 * 3;
+  max_iter = 100;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,
@@ -26,6 +27,9 @@ main (int argc, char *agrv[])
       "dtype", G_TYPE_FLOAT,
       "data", NULL,
       NULL);
+
+  g_object_set (threadpool,
+      "num_thread", 10, NULL);
 
   optic_tensor_add (self, 1.0);
 
