@@ -109,9 +109,13 @@ optic_threadpool_hire_workers (OpticThreadPool *self)
 }
 
 void
-optic_threadpool_fire_workers (OpticThreadPool *self, guint8 num_worker)
+optic_threadpool_fire_workers (OpticThreadPool *self)
 {
-
+  for (; self->thread_count > 0; self->thread_count--) {
+    pthread_exit (self->workers);
+    self->workers++;
+  }
+  self->workers = NULL;
 }
 
 gboolean

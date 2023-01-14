@@ -49,7 +49,7 @@ gboolean optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork 
 
 void optic_threadpool_hire_workers (OpticThreadPool *self);
 
-void optic_threadpool_fire_workers (OpticThreadPool *self, guint8 num_worker);
+void optic_threadpool_fire_workers (OpticThreadPool *self);
 
 G_END_DECLS
 #endif
