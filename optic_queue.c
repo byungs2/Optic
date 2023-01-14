@@ -85,6 +85,7 @@ optic_queue_init (OpticQueue *instance)
   instance->head = 0;
   instance->tail = 0;
   instance->leaky = 0;
+  instance->queue_size = DEFAULT_QUEUE_SIZE;
   pthread_mutex_init (&instance->lock, NULL);
 }
 
@@ -92,6 +93,7 @@ gboolean
 optic_queue_push (OpticQueue *queue, gpointer data) 
 {
   OPTIC_QUEUE_LOCK (queue->lock);
+  /* TODO change queue size dynamically */
   if ((queue->head - queue->tail) == 1) {
     OPTIC_QUEUE_UNLOCK (queue->lock);
     return 0;
@@ -116,5 +118,16 @@ optic_queue_pop (OpticQueue *queue)
   queue->head = (queue->head + 1)%queue->queue_size;
   OPTIC_QUEUE_UNLOCK (queue->lock);
   return data;
+}
+
+void
+optic_queue_flush (OpticQueue *queue)
+{
+  OPTIC_QUEUE_LOCK (queue->lock);
+  /* TODO buffer memory clear with flush */
+  for (; queue->head != queue->tail; queue->head = (queue->head + 1)%queue->queue_size) {
+    queue->queue[queue->head] = NULL;
+  }
+  OPTIC_QUEUE_UNLOCK (queue->lock);
 }
 
