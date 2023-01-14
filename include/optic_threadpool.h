@@ -21,6 +21,7 @@ G_BEGIN_DECLS
 typedef struct _OpticThreadPoolClass OpticThreadPoolClass;
 typedef struct _OpticThreadPool OpticThreadPool;
 typedef struct _OpticThreadPoolWork OpticThreadPoolWork;
+typedef void *(*OPTIC_THREADPOOL_LOOP) (gpointer);
 typedef void (*FUNCPTR) (gpointer);
 
 struct _OpticThreadPoolClass {
@@ -33,17 +34,22 @@ struct _OpticThreadPool {
   pthread_t *workers;
   pthread_mutex_t tp_lock;
   pthread_cond_t cond;
+  OPTIC_THREADPOOL_LOOP loop;
   guint thread_count;
 };
 
 struct _OpticThreadPoolWork {
   FUNCPTR work;
-  gpointer arg;
+  gpointer data;
 };
 
 GType optic_threadpool_get_type (void);
 
-void optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork *work);
+gboolean optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork *work);
+
+void optic_threadpool_hire_workers (OpticThreadPool *self);
+
+void optic_threadpool_fire_workers (OpticThreadPool *self, guint8 num_worker);
 
 G_END_DECLS
 #endif

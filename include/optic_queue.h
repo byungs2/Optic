@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "optic_object.h"
+#include <pthread.h>
 
 G_BEGIN_DECLS
 
@@ -16,7 +17,7 @@ G_BEGIN_DECLS
 #define OPTIC_IS_QUEUE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass), OPTIC_TYPE_QUEUE))
 
-#define MAX_QUEUE_SIZE 255
+#define DEFAULT_QUEUE_SIZE 255
 
 typedef struct _OpticQueueClass OpticQueueClass;
 typedef struct _OpticQueue OpticQueue;
@@ -27,8 +28,11 @@ struct _OpticQueueClass {
 
 struct _OpticQueue {
   OpticObject parent_instance;
-  gpointer queue[MAX_QUEUE_SIZE];
+  pthread_mutex_t lock;
+  gpointer queue[DEFAULT_QUEUE_SIZE];
+  guint queue_size;
   guint8 head, tail;
+  guint8 leaky;
 };
 
 GType optic_queue_get_type (void);
