@@ -43,5 +43,7 @@ gpointer optic_queue_pop (OpticQueue *queue);
 
 void optic_queue_flush (OpticQueue *queue);
 
+gboolean optic_queue_is_empty (OpticQueue *queue);
+
 G_END_DECLS
 #endif

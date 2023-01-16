@@ -30,7 +30,7 @@ struct _OpticThreadPoolClass {
 
 struct _OpticThreadPool {
   OpticObject parent_instance;
-  OpticQueue queue;
+  OpticQueue *queue;
   pthread_t *workers;
   pthread_mutex_t tp_lock;
   pthread_cond_t cond;

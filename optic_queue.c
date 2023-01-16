@@ -131,3 +131,15 @@ optic_queue_flush (OpticQueue *queue)
   OPTIC_QUEUE_UNLOCK (queue->lock);
 }
 
+gboolean 
+optic_queue_is_empty (OpticQueue *queue)
+{
+  gboolean result = 0;
+  OPTIC_QUEUE_LOCK (queue->lock);
+  if (queue->head == queue->tail) {
+    result = 1;
+  }
+  OPTIC_QUEUE_UNLOCK (queue->lock);
+  return result;
+}
+

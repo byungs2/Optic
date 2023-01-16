@@ -94,6 +94,7 @@ optic_threadpool_init (OpticThreadPool *instance)
   instance->workers = NULL;
   instance->thread_count = 0;
   instance->loop = optic_threadpool_default_loop;
+  instance->queue = g_object_new (OPTIC_TYPE_QUEUE, NULL);
   pthread_cond_init (&instance->cond, NULL);
   pthread_mutex_init (&instance->tp_lock, NULL);
 }
@@ -122,9 +123,18 @@ gboolean
 optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork *work)
 {
   gboolean result = 0;
-  result = optic_queue_push (&self->queue, (gpointer)work);
+  result = optic_queue_push (self->queue, (gpointer)work);
   if (result) {
     OPTIC_THREADPOOL_WAKE (self->cond);
+  } else {
+    /* TODO block thread properly  */
+    while (1) {
+      if (optic_queue_is_empty (self->queue)) {
+        optic_queue_push (self->queue, (gpointer)work);
+        OPTIC_THREADPOOL_WAKE (self->cond);
+        break;
+      }
+    }
   }
   return result;
 }
@@ -135,9 +145,11 @@ optic_threadpool_default_loop (gpointer arg)
   OpticThreadPoolWork *threadpool_work;
   OpticThreadPool *threadpool = (OpticThreadPool *)arg;
   while (1) {
-    threadpool_work = (OpticThreadPoolWork *)optic_queue_pop (&threadpool->queue);
+    threadpool_work = (OpticThreadPoolWork *)optic_queue_pop (threadpool->queue);
     if (threadpool_work == NULL) {
+      OPTIC_THREADPOOL_LOCK (threadpool->tp_lock);
       OPTIC_THREADPOOL_WAIT(threadpool->cond, threadpool->tp_lock);
+      OPTIC_THREADPOOL_UNLOCK (threadpool->tp_lock);
     } else {
       threadpool_work->work (threadpool_work->data);
     }

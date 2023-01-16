@@ -1,4 +1,4 @@
-Build started at 2023-01-15T01:04:50.521969
+Build started at 2023-01-16T21:57:35.679916
 Main binary: /usr/bin/python3
 Build Options: -Dbackend=ninja
 Python system: Linux
@@ -26,8 +26,8 @@ Host machine cpu: x86_64
 Target machine cpu family: x86_64
 Target machine cpu: x86_64
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpgq7lfx4s
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpgq7lfx4s/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpgq7lfx4s/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-parameter -Wunused-parameter 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpbvyv5ky6
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpbvyv5ky6/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpbvyv5ky6/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-parameter -Wunused-parameter 
 
 Code:
  int i;
@@ -38,8 +38,8 @@ Compiler stderr:
  
 Compiler for C++ supports arguments -Wno-unused-parameter -Wunused-parameter: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmp8hcecaht
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmp8hcecaht/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmp8hcecaht/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-parameter -Wunused-parameter 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpggjhh6gy
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpggjhh6gy/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpggjhh6gy/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-parameter -Wunused-parameter 
 
 Code:
  int i;
@@ -50,8 +50,8 @@ Compiler stderr:
  
 Compiler for C supports arguments -Wno-unused-parameter -Wunused-parameter: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpvw6hfjsi
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpvw6hfjsi/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpvw6hfjsi/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -D_GLIBCXX_USE_CXX11_ABI=1 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpclwwhsb5
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpclwwhsb5/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpclwwhsb5/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -D_GLIBCXX_USE_CXX11_ABI=1 
 
 Code:
  int i;
@@ -62,8 +62,8 @@ Compiler stderr:
  
 Compiler for C++ supports arguments -D_GLIBCXX_USE_CXX11_ABI=1: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpai5sgvwj
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpai5sgvwj/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpai5sgvwj/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -D_GLIBCXX_USE_CXX11_ABI=1 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmphbiv7lyu
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmphbiv7lyu/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmphbiv7lyu/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -D_GLIBCXX_USE_CXX11_ABI=1 
 
 Code:
  int i;
@@ -74,8 +74,8 @@ Compiler stderr:
  
 Compiler for C supports arguments -D_GLIBCXX_USE_CXX11_ABI=1: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmprqswmrpc
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmprqswmrpc/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmprqswmrpc/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-but-set-variable -Wunused-but-set-variable 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmplmmkbila
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmplmmkbila/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmplmmkbila/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-but-set-variable -Wunused-but-set-variable 
 
 Code:
  int i;
@@ -86,8 +86,8 @@ Compiler stderr:
  
 Compiler for C++ supports arguments -Wno-unused-but-set-variable -Wunused-but-set-variable: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpvpziyt34
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpvpziyt34/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpvpziyt34/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-but-set-variable -Wunused-but-set-variable 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpi33_6xyd
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpi33_6xyd/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpi33_6xyd/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-but-set-variable -Wunused-but-set-variable 
 
 Code:
  int i;
@@ -98,8 +98,8 @@ Compiler stderr:
  
 Compiler for C supports arguments -Wno-unused-but-set-variable -Wunused-but-set-variable: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmp_p0tzxxg
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmp_p0tzxxg/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmp_p0tzxxg/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-int-conversion -Wint-conversion 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmppryp26pm
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmppryp26pm/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmppryp26pm/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-int-conversion -Wint-conversion 
 
 Code:
  int i;
@@ -111,8 +111,8 @@ Compiler stderr:
 
 Compiler for C++ supports arguments -Wno-int-conversion -Wint-conversion: NO 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmp8si0z7pq
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmp8si0z7pq/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmp8si0z7pq/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-int-conversion -Wint-conversion 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpjohqntql
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpjohqntql/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpjohqntql/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-int-conversion -Wint-conversion 
 
 Code:
  int i;
@@ -123,8 +123,8 @@ Compiler stderr:
  
 Compiler for C supports arguments -Wno-int-conversion -Wint-conversion: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpj18vp8cl
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpj18vp8cl/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpj18vp8cl/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-variable -Wunused-variable 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmp0nr0fnpe
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmp0nr0fnpe/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmp0nr0fnpe/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-unused-variable -Wunused-variable 
 
 Code:
  int i;
@@ -135,8 +135,8 @@ Compiler stderr:
  
 Compiler for C++ supports arguments -Wno-unused-variable -Wunused-variable: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpqgm27toz
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpqgm27toz/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpqgm27toz/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-variable -Wunused-variable 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmp2x9s2fxe
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmp2x9s2fxe/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmp2x9s2fxe/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-unused-variable -Wunused-variable 
 
 Code:
  int i;
@@ -147,8 +147,8 @@ Compiler stderr:
  
 Compiler for C supports arguments -Wno-unused-variable -Wunused-variable: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpjpsbwnmo
-Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpjpsbwnmo/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpjpsbwnmo/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-comment -Wcomment 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpd5d_89_x
+Command line:  c++ /home/byunghun/workspace/optic/build/meson-private/tmpd5d_89_x/testfile.cpp -o /home/byunghun/workspace/optic/build/meson-private/tmpd5d_89_x/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive -Wno-comment -Wcomment 
 
 Code:
  int i;
@@ -159,8 +159,8 @@ Compiler stderr:
  
 Compiler for C++ supports arguments -Wno-comment -Wcomment: YES 
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpjes1wsfy
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpjes1wsfy/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpjes1wsfy/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-comment -Wcomment 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpc8qtkifc
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpc8qtkifc/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpc8qtkifc/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -Wno-comment -Wcomment 
 
 Code:
  int i;
@@ -178,8 +178,8 @@ Build targets in project: 1
 
 Found ninja-1.10.0 at /usr/bin/ninja
 Running compile:
-Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmplddqkn09
-Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmplddqkn09/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmplddqkn09/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 --print-search-dirs 
+Working directory:  /home/byunghun/workspace/optic/build/meson-private/tmpihqh5fh0
+Command line:  cc /home/byunghun/workspace/optic/build/meson-private/tmpihqh5fh0/testfile.c -o /home/byunghun/workspace/optic/build/meson-private/tmpihqh5fh0/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 --print-search-dirs 
 
 Code:
  

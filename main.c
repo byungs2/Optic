@@ -3,6 +3,16 @@
 #include "include/optic_threadpool.h"
 #include <time.h>
 
+void thread_test (gpointer data);
+
+void
+thread_test (gpointer data)
+{
+  gfloat dist;
+  OpticTensor **tensor = (OpticTensor **)data;
+  dist = optic_tensor_distance (tensor[0], tensor[1]);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -17,7 +27,7 @@ main (int argc, char *argv[])
   OpticThreadPoolWork work_;
 
   max_dim = 1;
-  max_iter = 255;
+  max_iter = 1000000;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,
@@ -39,6 +49,8 @@ main (int argc, char *argv[])
 
   tensor_list[0] = self;
   tensor_list[1] = other;
+  work_.work = thread_test;
+  work_.data = tensor_list;
 
   time = g_get_real_time ();
   for (iter = 0; iter < max_iter; iter++) {
@@ -47,7 +59,12 @@ main (int argc, char *argv[])
   diff2 = ((g_get_real_time () - time)/1000.0);
   g_print ("AVX 256 TIME %f\n", diff2);
 
+  for (iter = 0; iter < max_iter; iter++) {
+    optic_threadpool_push_work (threadpool, &work_);
+  }
+
   g_object_unref (self);
   g_object_unref (other);
+  while (1);
   return 0;
 }
