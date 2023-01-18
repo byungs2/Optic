@@ -1,1 +1,0 @@
-[{"cmd": ["/home/byunghun/workspace/optic/build/pr_first"], "env": {}, "name": "basic", "workdir": null, "timeout": 30, "suite": ["pr_first"], "is_parallel": true, "priority": 0, "protocol": "exitcode"}]

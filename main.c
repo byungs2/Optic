@@ -24,10 +24,9 @@ main (int argc, char *argv[])
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *tensor_list[2];
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
-  OpticThreadPoolWork work_;
 
   max_dim = 1;
-  max_iter = 1000000;
+  max_iter = 10000;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,
@@ -42,15 +41,15 @@ main (int argc, char *argv[])
       NULL);
 
   g_object_set (threadpool,
-      "num_thread", 4, NULL);
+      "num-thread", 4, 
+      "work-func", thread_test, 
+      NULL);
 
   optic_threadpool_hire_workers (threadpool);
   optic_tensor_add (self, 1.0);
 
   tensor_list[0] = self;
   tensor_list[1] = other;
-  work_.work = thread_test;
-  work_.data = tensor_list;
 
   time = g_get_real_time ();
   for (iter = 0; iter < max_iter; iter++) {
@@ -60,7 +59,7 @@ main (int argc, char *argv[])
   g_print ("AVX 256 TIME %f\n", diff2);
 
   for (iter = 0; iter < max_iter; iter++) {
-    optic_threadpool_push_work (threadpool, &work_);
+    optic_threadpool_push_work (threadpool, (gpointer)tensor_list);
   }
 
   g_object_unref (self);

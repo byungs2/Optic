@@ -35,17 +35,13 @@ struct _OpticThreadPool {
   pthread_mutex_t tp_lock;
   pthread_cond_t cond;
   OPTIC_THREADPOOL_LOOP loop;
-  guint thread_count;
-};
-
-struct _OpticThreadPoolWork {
   FUNCPTR work;
-  gpointer data;
+  guint thread_count;
 };
 
 GType optic_threadpool_get_type (void);
 
-gboolean optic_threadpool_push_work (OpticThreadPool *self, OpticThreadPoolWork *work);
+gboolean optic_threadpool_push_work (OpticThreadPool *self, gpointer data);
 
 void optic_threadpool_hire_workers (OpticThreadPool *self);
 
