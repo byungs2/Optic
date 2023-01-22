@@ -17,7 +17,7 @@ G_BEGIN_DECLS
 #define OPTIC_IS_QUEUE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass), OPTIC_TYPE_QUEUE))
 
-#define DEFAULT_QUEUE_SIZE 255
+#define DEFAULT_QUEUE_SIZE 256
 
 typedef struct _OpticQueueClass OpticQueueClass;
 typedef struct _OpticQueue OpticQueue;
@@ -29,8 +29,9 @@ struct _OpticQueueClass {
 struct _OpticQueue {
   OpticObject parent_instance;
   pthread_mutex_t lock;
-  gpointer queue[DEFAULT_QUEUE_SIZE];
-  guint queue_size;
+  pthread_cond_t cond;
+  gpointer *queue;
+  guint size;
   guint8 head, tail;
   guint8 leaky;
 };
@@ -44,6 +45,8 @@ gpointer optic_queue_pop (OpticQueue *queue);
 void optic_queue_flush (OpticQueue *queue);
 
 gboolean optic_queue_is_empty (OpticQueue *queue);
+
+gboolean optic_queue_is_full (OpticQueue *queue);
 
 G_END_DECLS
 #endif

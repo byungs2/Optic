@@ -26,7 +26,7 @@ main (int argc, char *argv[])
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
 
   max_dim = 1;
-  max_iter = 10000;
+  max_iter = 100000;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,

@@ -2,8 +2,12 @@
 
 G_DEFINE_TYPE (OpticQueue, optic_queue, OPTIC_TYPE_OBJECT)
 
+/* TODO manage memory of allocated data outside the queue */
+
 #define OPTIC_QUEUE_LOCK(lock) pthread_mutex_lock (&lock)
 #define OPTIC_QUEUE_UNLOCK(lock) pthread_mutex_unlock (&lock)
+#define OPTIC_QUEUE_WAIT(cond, lock) pthread_cond_wait (&cond, &lock)
+#define OPTIC_QUEUE_WAKE(cond) pthread_cond_signal (&cond)
 
 enum {
   PROP_0 = 0,
@@ -35,7 +39,12 @@ optic_queue_set_property (GObject *object,
       self->leaky = (guint8)g_value_get_uint (value);
       break;
     case PROP_QUEUE_SIZE:
-      self->queue_size = g_value_get_uint (value);
+      self->size = g_value_get_uint (value);
+      if (self->queue != NULL) { 
+        optic_queue_flush (self);
+        g_free (self->queue);
+        self->queue = g_malloc0 (sizeof(gpointer) * self->size);
+      }
     default:
       break;
   }
@@ -85,21 +94,32 @@ optic_queue_init (OpticQueue *instance)
   instance->head = 0;
   instance->tail = 0;
   instance->leaky = 0;
-  instance->queue_size = DEFAULT_QUEUE_SIZE;
+  instance->size = DEFAULT_QUEUE_SIZE;
+  instance->queue = g_malloc0 (sizeof(gpointer) * DEFAULT_QUEUE_SIZE);
   pthread_mutex_init (&instance->lock, NULL);
+  pthread_cond_init (&instance->cond, NULL);
 }
 
 gboolean 
 optic_queue_push (OpticQueue *queue, gpointer data) 
 {
   OPTIC_QUEUE_LOCK (queue->lock);
-  /* TODO change queue size dynamically */
-  if ((queue->head - queue->tail) == 1) {
-    OPTIC_QUEUE_UNLOCK (queue->lock);
-    return 0;
+  /* TODO change queue size dynamically 
+   * TODO fix leaky memory problem 
+   * TODO single thread queue */
+  if (optic_queue_is_full (queue)) {
+    if (queue->leaky) {
+      queue->queue[queue->tail] = data;
+      queue->tail = (queue->tail + 1)%queue->size;
+      queue->head = (queue->head + 1)%queue->size;
+      OPTIC_QUEUE_UNLOCK (queue->lock);
+      return 1;
+    } else {
+      OPTIC_QUEUE_WAIT (queue->cond, queue->lock);
+    }
   }
   queue->queue[queue->tail] = data;
-  queue->tail = (queue->tail + 1)%queue->queue_size;
+  queue->tail = (queue->tail + 1)%queue->size;
   OPTIC_QUEUE_UNLOCK (queue->lock);
   return 1;
 }
@@ -109,13 +129,14 @@ optic_queue_pop (OpticQueue *queue)
 {
   gpointer data = NULL;
   OPTIC_QUEUE_LOCK (queue->lock);
-  if (queue->head == queue->tail) {
+  if (optic_queue_is_empty (queue)) {
+    OPTIC_QUEUE_WAKE (queue->cond);
     OPTIC_QUEUE_UNLOCK (queue->lock);
     return NULL;
   }
   data = queue->queue[queue->head];
   queue->queue[queue->head] = NULL;
-  queue->head = (queue->head + 1)%queue->queue_size;
+  queue->head = (queue->head + 1)%queue->size;
   OPTIC_QUEUE_UNLOCK (queue->lock);
   return data;
 }
@@ -124,8 +145,7 @@ void
 optic_queue_flush (OpticQueue *queue)
 {
   OPTIC_QUEUE_LOCK (queue->lock);
-  /* TODO buffer memory clear with flush */
-  for (; queue->head != queue->tail; queue->head = (queue->head + 1)%queue->queue_size) {
+  for (; !optic_queue_is_empty (queue); queue->head = (queue->head + 1)%queue->size) {
     queue->queue[queue->head] = NULL;
   }
   OPTIC_QUEUE_UNLOCK (queue->lock);
@@ -135,11 +155,19 @@ gboolean
 optic_queue_is_empty (OpticQueue *queue)
 {
   gboolean result = 0;
-  OPTIC_QUEUE_LOCK (queue->lock);
   if (queue->head == queue->tail) {
     result = 1;
   }
-  OPTIC_QUEUE_UNLOCK (queue->lock);
+  return result;
+}
+
+gboolean
+optic_queue_is_full (OpticQueue *queue)
+{
+  gboolean result = 0;
+  if (queue->head % queue->size == (queue->tail + 1) % queue->size) {
+    result = 1;
+  } 
   return result;
 }
 

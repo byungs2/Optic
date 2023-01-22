@@ -142,15 +142,6 @@ optic_threadpool_push_work (OpticThreadPool *self, gpointer data)
   result = optic_queue_push (self->queue, data);
   if (result) {
     OPTIC_THREADPOOL_WAKE (self->cond);
-  } else {
-    /* TODO block thread properly  */
-    while (1) {
-      if (optic_queue_is_empty (self->queue)) {
-        optic_queue_push (self->queue, data);
-        OPTIC_THREADPOOL_WAKE (self->cond);
-        break;
-      }
-    }
   }
   return result;
 }
