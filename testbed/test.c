@@ -13,9 +13,10 @@ int
 main (int argc, char *argv[])
 {
   int a = 0;
+  int *b = (int *)malloc (sizeof(int) * 1);
+  *b = 16;
   size_t offset = offsetof (struct x, b);
   printf ("%ld\n", offset);
   printf ("%ld\n", G_TYPE_INT);
-
   return 0;
 }

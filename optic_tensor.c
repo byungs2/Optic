@@ -141,7 +141,7 @@ gfloat
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {
   gint i, iter = { 0, };
-  gfloat res = 0;
+  gfloat res, tmp = { 0, };
   gfloat *tmp_self, *tmp_other = { NULL, };
   __m256 self_tensor, other_tensor, dest, distance;
 
@@ -149,7 +149,7 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
   g_assert (self->dim_size == other->dim_size 
       && self->tensor != NULL && other->tensor != NULL);
 
-  iter = (self->length + 7)/8;
+  iter = self->length/8;
 
   tmp_self = (gfloat *)self->tensor;
   tmp_other = (gfloat *)other->tensor;
@@ -165,27 +165,68 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
     tmp_self += 8;
     tmp_other += 8;
   }
-  for (i = 0; i < 8; i++) {
+  for (i = 0; iter > 0 && i < 8; i++) {
     res += ((gfloat *)&distance)[i];
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp = tmp_self[i-1] - tmp_other[i-1];
+    tmp *= tmp;
+    res += tmp;
   }
   
   return sqrt(res);
 }
 
-void
+gfloat
 optic_tensor_dot (OpticTensor *self, OpticTensor *other)
 {
+  gint i, iter = { 0, };
+  gfloat res, tmp = { 0, };
+  gfloat *tmp_self, *tmp_other = { NULL, };
+  __m256 self_tensor, other_tensor, dest, mul;
 
+  /* TODO need to check shape too */
+  g_assert (self->dim_size == other->dim_size 
+      && self->tensor != NULL && other->tensor != NULL);
+
+  iter = self->length/8;
+
+  tmp_self = (gfloat *)self->tensor;
+  tmp_other = (gfloat *)other->tensor;
+  dest = _mm256_set1_ps (0.0);
+
+  for (i = 0; i < iter; i++) {
+    self_tensor = _mm256_loadu_ps (tmp_self);
+    other_tensor = _mm256_loadu_ps (tmp_other);
+    mul = _mm256_mul_ps (self_tensor, other_tensor);
+    dest = _mm256_add_ps (dest, mul);
+
+    tmp_self += 8;
+    tmp_other += 8;
+  }
+  for (i = 0; iter > 0 && i < 8; i++) {
+    res += ((gfloat *)&dest)[i];
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp = tmp_self[i-1] * tmp_other[i-1];
+    res += tmp;
+  }
+
+  return res;
 }
 
 void
-optic_tensor_cross (OpticTensor *self, OpticTensor *other)
+optic_tensor_cross (OpticTensor *self, OpticTensor *other, OpticTensor *dest)
 {
 
 }
 
 void
-optic_tensor_outer (OpticTensor *self, OpticTensor *other)
+optic_tensor_outer (OpticTensor *self, OpticTensor *other, OpticTensor *dest)
 {
 
 }
@@ -199,7 +240,7 @@ optic_tensor_mul (OpticTensor *self, gfloat constant)
 
   g_assert (self->tensor != NULL);
 
-  i = (self->length + 7)/8;
+  i = self->length/8;
 
   tmp_self = (gfloat *)self->tensor;
   cnst = _mm256_set1_ps (constant);
@@ -210,6 +251,11 @@ optic_tensor_mul (OpticTensor *self, gfloat constant)
     _mm256_storeu_ps (tmp_self, dest);
 
     tmp_self += 8;
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp_self[i-1] *= constant;
   }
 }
 
@@ -222,7 +268,7 @@ optic_tensor_div (OpticTensor *self, gfloat constant)
 
   g_assert (constant != 0);
 
-  i = (self->length + 7)/8;
+  i = self->length/8;
 
   tmp_self = (gfloat *)self->tensor;
   cnst = _mm256_set1_ps (constant);
@@ -233,6 +279,11 @@ optic_tensor_div (OpticTensor *self, gfloat constant)
     _mm256_storeu_ps (tmp_self, dest);
 
     tmp_self += 8;
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp_self[i-1] /= constant;
   }
 }
 
@@ -245,7 +296,7 @@ optic_tensor_add (OpticTensor *self, gfloat constant)
 
   g_assert (constant != 0);
 
-  i = (self->length + 7)/8;
+  i = self->length/8;
 
   tmp_self = (gfloat *)self->tensor;
   cnst = _mm256_set1_ps (constant);
@@ -256,5 +307,10 @@ optic_tensor_add (OpticTensor *self, gfloat constant)
     _mm256_storeu_ps (tmp_self, dest);
 
     tmp_self += 8;
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp_self[i-1] += constant;
   }
 }

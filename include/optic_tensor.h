@@ -43,5 +43,11 @@ void optic_tensor_div (OpticTensor *self, gfloat constant);
 
 void optic_tensor_add (OpticTensor *self, gfloat constant);
 
+gfloat optic_tensor_dot (OpticTensor *self, OpticTensor *other);
+
+void optic_tensor_cross (OpticTensor *self, OpticTensor *other, OpticTensor *dest);
+
+void optic_tensor_outer (OpticTensor *self, OpticTensor *other, OpticTensor *dest);
+
 G_END_DECLS
 #endif

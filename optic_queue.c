@@ -109,6 +109,8 @@ optic_queue_push (OpticQueue *queue, gpointer data)
    * TODO single thread queue */
   if (optic_queue_is_full (queue)) {
     if (queue->leaky) {
+      g_free (queue->queue[queue->head]);
+      queue->queue[queue->head] = NULL;
       queue->queue[queue->tail] = data;
       queue->tail = (queue->tail + 1)%queue->size;
       queue->head = (queue->head + 1)%queue->size;
@@ -146,6 +148,7 @@ optic_queue_flush (OpticQueue *queue)
 {
   OPTIC_QUEUE_LOCK (queue->lock);
   for (; !optic_queue_is_empty (queue); queue->head = (queue->head + 1)%queue->size) {
+    g_free (queue->queue[queue->head]);
     queue->queue[queue->head] = NULL;
   }
   OPTIC_QUEUE_UNLOCK (queue->lock);

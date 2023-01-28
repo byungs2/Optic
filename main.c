@@ -26,7 +26,7 @@ main (int argc, char *argv[])
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
 
   max_dim = 1;
-  max_iter = 100000;
+  max_iter = 1;
   g_object_set (self, 
       "dim", max_dim, 
       "shape", shape,
@@ -56,7 +56,14 @@ main (int argc, char *argv[])
     dist = optic_tensor_distance (self, other);
   }
   diff2 = ((g_get_real_time () - time)/1000.0);
-  g_print ("AVX 256 TIME %f\n", diff2);
+  g_print ("AVX 256 TIME %f %f\n", diff2, dist);
+
+  time = g_get_real_time ();
+  for (iter = 0; iter < max_iter; iter++) {
+    dist = optic_tensor_dot (self, other);
+  }
+  diff2 = ((g_get_real_time () - time)/1000.0);
+  g_print ("AVX 256 TIME DOT %f %f\n", diff2, dist);
 
   for (iter = 0; iter < max_iter; iter++) {
     optic_threadpool_push_work (threadpool, (gpointer)tensor_list);
