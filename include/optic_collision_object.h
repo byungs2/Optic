@@ -24,11 +24,11 @@ struct _OpticCollisionObjectClass {
   GObjectClass parent_class;
   guint signals[OPTIC_COLLISION_OBJECT_MAX_SIGNAL_COUNT];
   void (*collision_signal_default_handler) (OpticCollisionObject *, gpointer);
+  void (*is_collision) (OpticCollisionObject *, OpticCollisionObject *);
 };
 
 struct _OpticCollisionObject {
   GObject parent_instance;
-  gint collision_count; /* need to move inside of private */
 };
 
 enum _OpticCollisionObjectSignal {
@@ -39,6 +39,8 @@ GType optic_collision_object_get_type (void);
 
 void optic_collision_object_default_signal_callback (OpticCollisionObject *self,
     gpointer user_data);
+
+void optic_collision_object_is_collision (OpticCollisionObject *self, OpticCollisionObject *other);
 
 G_END_DECLS
 #endif

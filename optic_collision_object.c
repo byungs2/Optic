@@ -1,8 +1,14 @@
 #include <stddef.h>
 #include "include/optic_collision_object.h"
 
+typedef struct _OpticCollisionObjectPrivate OpticCollisionObjectPrivate;
+
+struct _OpticCollisionObjectPrivate {
+  gint collision_count;
+};
+
 /* must change to private define */
-G_DEFINE_TYPE (OpticCollisionObject, optic_collision_object, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (OpticCollisionObject, optic_collision_object, G_TYPE_OBJECT)
 
 static void
 optic_collision_object_class_init (OpticCollisionObjectClass *klass)
@@ -26,7 +32,8 @@ optic_collision_object_class_init (OpticCollisionObjectClass *klass)
 static void
 optic_collision_object_init (OpticCollisionObject *instance)
 {
-  instance->collision_count = 0;
+  OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (instance);
+  priv->collision_count = 0;
 }
 
 void 
@@ -34,6 +41,8 @@ optic_collision_object_default_signal_callback (OpticCollisionObject *self,
     gpointer user_data)
 {
   OpticCollisionObject *other = (OpticCollisionObject *)user_data;
-  self->collision_count++;
-  other->collision_count++;
+  OpticCollisionObjectPrivate *other_priv = optic_collision_object_get_instance_private (other);
+  OpticCollisionObjectPrivate *self_priv = optic_collision_object_get_instance_private (self);
+  self_priv->collision_count++;
+  other_priv->collision_count++;
 }

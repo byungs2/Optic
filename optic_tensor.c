@@ -136,7 +136,6 @@ optic_tensor_init (OpticTensor *instance)
   instance->tensor = NULL;
 }
 
-/* TODO need to remove padding float bytes */
 gfloat 
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {
