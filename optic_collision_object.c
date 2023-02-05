@@ -16,6 +16,7 @@ optic_collision_object_class_init (OpticCollisionObjectClass *klass)
   size_t default_signal_handler_offset = offsetof (OpticCollisionObjectClass, 
       collision_signal_default_handler);
   klass->collision_signal_default_handler = optic_collision_object_default_signal_callback;
+  klass->update_state = optic_collision_object_update_state_default_func;
   klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT] = g_signal_new ("collision",
       G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
@@ -27,6 +28,7 @@ optic_collision_object_class_init (OpticCollisionObjectClass *klass)
       1,
       G_TYPE_POINTER
       );
+
 }
 
 static void
@@ -45,4 +47,10 @@ optic_collision_object_default_signal_callback (OpticCollisionObject *self,
   OpticCollisionObjectPrivate *self_priv = optic_collision_object_get_instance_private (self);
   self_priv->collision_count++;
   other_priv->collision_count++;
+}
+
+gboolean
+optic_collision_object_update_state_default_func (OpticCollisionObject *self)
+{
+  return 1;
 }

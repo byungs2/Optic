@@ -24,6 +24,7 @@ main (int argc, char *argv[])
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *tensor_list[2];
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
+  GMainLoop *loop = NULL;
 
   max_dim = 1;
   max_iter = 1;
@@ -71,6 +72,7 @@ main (int argc, char *argv[])
 
   g_object_unref (self);
   g_object_unref (other);
-  while (1);
+  loop = g_main_loop_new (NULL, FALSE);
+  g_main_loop_run (loop);
   return 0;
 }

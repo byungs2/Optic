@@ -31,5 +31,7 @@ struct _OpticObject {
 
 GType optic_object_get_type (void);
 
+gboolean optic_object_update_state_default_func (OpticObject *self);
+
 G_END_DECLS
 #endif

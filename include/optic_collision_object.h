@@ -43,5 +43,7 @@ void optic_collision_object_default_signal_callback (OpticCollisionObject *self,
 
 void optic_collision_object_is_collision (OpticCollisionObject *self, OpticCollisionObject *other);
 
+gboolean optic_collision_object_update_state_default_func (OpticCollisionObject *self);
+
 G_END_DECLS
 #endif
