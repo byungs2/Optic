@@ -35,6 +35,7 @@ threads = dependency('threads')
 
 pr_first = executable('pr_first',
   'main.c',
+  'optic_voxel.c',
   'optic_collision_object.c',
   'optic_object.c',
   'optic_tensor.c',

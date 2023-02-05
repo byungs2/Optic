@@ -21,13 +21,11 @@ typedef struct _OpticVoxelClass OpticVoxelClass;
 typedef struct _OpticVoxel OpticVoxel;
 
 struct _OpticVoxelClass {
-  OpticObjectClass parent_class;
+  OpticCollisionObjectClass parent_class;
 };
 
 struct _OpticVoxel {
-  OpticObject parent_instance;
-  OpticTensor *point;
-  gfloat scale;
+  OpticCollisionObject parent_instance;
 };
 
 GType optic_voxel_get_type (void);

@@ -29,7 +29,7 @@ static void
 optic_tensor_set_property (GObject *object, 
     guint property_id, 
     const GValue *value, 
-    GParamSpec *psepc)
+    GParamSpec *pspec)
 {
   gint i;
   gpointer pointer;

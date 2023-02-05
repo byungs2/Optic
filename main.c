@@ -1,6 +1,7 @@
 #include "include/optic_tensor.h"
 #include "include/optic_queue.h"
 #include "include/optic_threadpool.h"
+#include "include/optic_voxel.h"
 #include <time.h>
 
 void thread_test (gpointer data);
@@ -24,6 +25,7 @@ main (int argc, char *argv[])
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *tensor_list[2];
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
+  OpticVoxel voxels[2];
   GMainLoop *loop = NULL;
 
   max_dim = 1;
