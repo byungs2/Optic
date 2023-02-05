@@ -25,6 +25,7 @@ struct _OpticCollisionObjectClass {
   guint signals[OPTIC_COLLISION_OBJECT_MAX_SIGNAL_COUNT];
   void (*collision_signal_default_handler) (OpticCollisionObject *, gpointer);
   void (*is_collision) (OpticCollisionObject *, OpticCollisionObject *);
+  gboolean (*update_state) (OpticCollisionObject *);
 };
 
 struct _OpticCollisionObject {

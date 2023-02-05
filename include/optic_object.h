@@ -1,11 +1,6 @@
 #ifndef __OPTIC_OBJECT_H__
 #define __OPTIC_OBJECT_H__
 
-/* 
- * OpticObject
- * derivable object of optic library
- */
-
 #include "common.h"
 
 G_BEGIN_DECLS
@@ -27,6 +22,7 @@ typedef struct _OpticObject OpticObject;
 
 struct _OpticObjectClass {
   GObjectClass parent_class;
+  gboolean (*update_state) (OpticObject *);
 };
 
 struct _OpticObject {
