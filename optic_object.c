@@ -3,7 +3,7 @@
 typedef struct _OpticObjectPrivate OpticObjectPrivate;
 
 struct _OpticObjectPrivate {
-
+  int dummy;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (OpticObject, optic_object, G_TYPE_OBJECT);

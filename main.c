@@ -25,8 +25,14 @@ main (int argc, char *argv[])
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *tensor_list[2];
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
-  OpticVoxel voxels[2];
+  OpticVoxel **voxels = NULL;
   GMainLoop *loop = NULL;
+
+  voxels = (OpticVoxel **)g_malloc0 (sizeof (OpticVoxel *) * 2);
+  for (iter = 0; iter < 2; iter++) {
+    voxels[iter] = g_object_new (OPTIC_TYPE_VOXEL, NULL); 
+  }
+  optic_collision_object_is_collision (OPTIC_COLLISION_OBJECT (voxels[0]), OPTIC_COLLISION_OBJECT (voxels[1]));
 
   max_dim = 1;
   max_iter = 1;
