@@ -19,7 +19,7 @@ main (int argc, char *argv[])
 {
   gint64 time, max_dim;
   gfloat diff1, diff2, dist;
-  guint64 shape[1] = { 50000 };
+  guint64 shape[1] = { 3 };
   guint64 max_iter, iter;
   OpticTensor *self = g_object_new (OPTIC_TYPE_TENSOR, NULL);
   OpticTensor *other = g_object_new (OPTIC_TYPE_TENSOR, NULL);
@@ -27,12 +27,24 @@ main (int argc, char *argv[])
   OpticThreadPool *threadpool = g_object_new (OPTIC_TYPE_THREADPOOL, NULL);
   OpticVoxel **voxels = NULL;
   GMainLoop *loop = NULL;
+  gboolean res = 0;
+  gint a, b;
 
   voxels = (OpticVoxel **)g_malloc0 (sizeof (OpticVoxel *) * 2);
   for (iter = 0; iter < 2; iter++) {
     voxels[iter] = g_object_new (OPTIC_TYPE_VOXEL, NULL); 
+    g_object_set (voxels[iter],
+        "point",
+        NULL,
+        NULL); /* set point 0 */
   }
-  optic_collision_object_is_collision (OPTIC_COLLISION_OBJECT (voxels[0]), OPTIC_COLLISION_OBJECT (voxels[1]));
+
+  res = optic_voxel_is_collision (G_OBJECT (voxels[0]), G_OBJECT (voxels[1]), 0.2);
+  if (res) {
+    g_object_get (voxels[0], "collision-count", &a, NULL);
+    g_object_get (voxels[1], "collision-count", &b, NULL);
+    g_print ("COLISION %d %d\n", a, b);
+  }
 
   max_dim = 1;
   max_iter = 1;

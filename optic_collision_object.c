@@ -5,7 +5,8 @@ enum _OpticCollisionObjectSignal {
   OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT = 0,
 } OpticCollisionObjectSignal;
 
-gboolean optic_collision_object_default_is_collision (OpticCollisionObject *self, OpticCollisionObject *other);
+gboolean optic_collision_object_default_is_collision (OpticCollisionObject *self, 
+    OpticCollisionObject *other, gfloat threshold);
 
 gboolean optic_collision_object_update_state_default_func (OpticCollisionObject *self);
 
@@ -18,7 +19,8 @@ struct _OpticCollisionObjectPrivate {
 
 enum {
   PROP_0 = 0,
-  PROP_COLLISION_OBJECT_POINT
+  PROP_COLLISION_OBJECT_POINT,
+  PROP_COLLISION_OBJECT_COLLISION_COUNT
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (OpticCollisionObject, optic_collision_object, G_TYPE_OBJECT)
@@ -49,6 +51,9 @@ optic_collision_object_get_property (GObject *object,
       g_object_get (priv->point, "data", pointer, NULL);
       g_value_set_pointer (value, pointer);
       break;
+    case PROP_COLLISION_OBJECT_COLLISION_COUNT:
+      g_value_set_int (value, priv->collision_count);
+      break;
     default:
       break;
   }
@@ -62,9 +67,16 @@ optic_collision_object_set_property (GObject *object,
 {
   OpticCollisionObject *self = OPTIC_COLLISION_OBJECT (object);
   OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (self);
+  gpointer pointer = NULL;
+  gint64 shape[1] = { 3 }; /* TODO */
   switch (property_id) {
     case PROP_COLLISION_OBJECT_POINT:
-      g_object_set (priv->point, "data", value, NULL);
+      pointer = g_value_get_pointer (value);
+      g_object_set (priv->point, 
+          "dim", 1,
+          "shape", shape,
+          "dtype", G_TYPE_FLOAT,
+          "data", pointer, NULL);
       break;
     default:
       break;
@@ -93,6 +105,15 @@ optic_collision_object_class_init (OpticCollisionObjectClass *klass)
       );
   klass->update_state = optic_collision_object_update_state_default_func;
   klass->is_collision = optic_collision_object_default_is_collision;
+
+  g_object_class_install_property (gobject_class, 
+      PROP_COLLISION_OBJECT_POINT,
+      g_param_spec_pointer ("point", "Values of point",
+        "Value of point", G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, 
+      PROP_COLLISION_OBJECT_COLLISION_COUNT,
+      g_param_spec_int ("collision-count", "Values of collision count",
+        "Value of count", 0, G_MAXINT, 0, G_PARAM_READABLE));
 }
 
 static void
@@ -100,43 +121,36 @@ optic_collision_object_init (OpticCollisionObject *instance)
 {
   OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (instance);
   priv->collision_count = 0;
-  priv->point = NULL;
+  priv->point = g_object_new (OPTIC_TYPE_TENSOR, NULL);
 }
 
 void 
 optic_collision_object_default_signal_callback (OpticCollisionObject *self, 
     gpointer user_data)
 {
-  OpticCollisionObject *other = (OpticCollisionObject *)user_data;
-  OpticCollisionObjectPrivate *other_priv = optic_collision_object_get_instance_private (other);
   OpticCollisionObjectPrivate *self_priv = optic_collision_object_get_instance_private (self);
   self_priv->collision_count++;
-  other_priv->collision_count++;
-  g_print ("collision %d %d\n", self_priv->collision_count, other_priv->collision_count);
 }
 
 gboolean
-optic_collision_object_default_is_collision (OpticCollisionObject *self, OpticCollisionObject *other)
+optic_collision_object_default_is_collision (OpticCollisionObject *self, 
+    OpticCollisionObject *other, gfloat threshold)
 {
   gboolean res = 1;
   gfloat dest = 0;
   OpticCollisionObjectPrivate *self_priv = optic_collision_object_get_instance_private (self);
   OpticCollisionObjectPrivate *other_priv = optic_collision_object_get_instance_private (self);
-  OpticCollisionObjectClass *klass = OPTIC_COLLISION_GET_CLASS (self);
+  OpticCollisionObjectClass *klass = OPTIC_COLLISION_OBJECT_GET_CLASS (self);
+
+  dest = optic_tensor_distance (self_priv->point, other_priv->point);
 
   /* TODO criteria of collision */
-  if (res) {
-    g_print ("SIGNAL EMIT\n");
+  if (dest <= threshold) {
     g_signal_emit (self, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
+    g_signal_emit (other, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
+    res = 1;
   }
   return res;
-}
-
-void 
-optic_collision_object_is_collision (OpticCollisionObject *self, OpticCollisionObject *other)
-{
-  OpticCollisionObjectClass *klass = OPTIC_COLLISION_GET_CLASS (self);
-  klass->is_collision (self, other);
 }
 
 gboolean

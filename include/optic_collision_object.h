@@ -14,7 +14,7 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),OPTIC_TYPE_COLLISION_OBJECT))
 #define OPTIC_IS_COLLISION_OBJECT_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass), OPTIC_TYPE_COLLISION_OBJECT))
-#define OPTIC_COLLISION_GET_CLASS(obj) \
+#define OPTIC_COLLISION_OBJECT_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), OPTIC_TYPE_COLLISION_OBJECT, OpticCollisionObjectClass))
 
 #define OPTIC_COLLISION_OBJECT_MAX_SIGNAL_COUNT 12
@@ -26,7 +26,7 @@ struct _OpticCollisionObjectClass {
   GObjectClass parent_class;
   guint signals[OPTIC_COLLISION_OBJECT_MAX_SIGNAL_COUNT];
   void (*collision_signal_default_handler) (OpticCollisionObject *, gpointer);
-  gboolean (*is_collision) (OpticCollisionObject *, OpticCollisionObject *);
+  gboolean (*is_collision) (OpticCollisionObject *, OpticCollisionObject *, gfloat);
   gboolean (*update_state) (OpticCollisionObject *);
 };
 
@@ -38,9 +38,6 @@ GType optic_collision_object_get_type (void);
 
 void optic_collision_object_default_signal_callback (OpticCollisionObject *self,
     gpointer user_data);
-
-void optic_collision_object_is_collision (OpticCollisionObject *self, 
-    OpticCollisionObject *other);
 
 G_END_DECLS
 #endif

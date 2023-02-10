@@ -30,5 +30,7 @@ struct _OpticVoxel {
 
 GType optic_voxel_get_type (void);
 
+gboolean optic_voxel_is_collision (GObject *self, GObject *other, gfloat threshold);
+
 G_END_DECLS
 #endif
