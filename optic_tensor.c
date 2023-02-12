@@ -139,9 +139,9 @@ optic_tensor_init (OpticTensor *instance)
 gfloat 
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {
-  gint i, iter = { 0, };
-  gfloat res, tmp = { 0, };
-  gfloat *tmp_self, *tmp_other = { NULL, };
+  gint i = 0, iter = 0;
+  gfloat res = 0.0, tmp = 0.0;
+  gfloat *tmp_self = NULL, *tmp_other = NULL;
   __m256 self_tensor, other_tensor, dest, distance;
 
   /* TODO need to check shape too */
@@ -181,9 +181,10 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 gfloat
 optic_tensor_dot (OpticTensor *self, OpticTensor *other)
 {
-  gint i, iter = { 0, };
-  gfloat res, tmp = { 0, };
-  gfloat *tmp_self, *tmp_other = { NULL, };
+  gint i = 0, iter = 0;
+  gfloat res = 0.0;
+  gfloat tmp = 0.0;
+  gfloat *tmp_self = NULL, *tmp_other = NULL;
   __m256 self_tensor, other_tensor, dest, mul;
 
   /* TODO need to check shape too */

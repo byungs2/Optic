@@ -30,22 +30,6 @@ main (int argc, char *argv[])
   gboolean res = 0;
   gint a, b;
 
-  voxels = (OpticVoxel **)g_malloc0 (sizeof (OpticVoxel *) * 2);
-  for (iter = 0; iter < 2; iter++) {
-    voxels[iter] = g_object_new (OPTIC_TYPE_VOXEL, NULL); 
-    g_object_set (voxels[iter],
-        "point",
-        NULL,
-        NULL); /* set point 0 */
-  }
-
-  res = optic_voxel_is_collision (G_OBJECT (voxels[0]), G_OBJECT (voxels[1]), 0.2);
-  if (res) {
-    g_object_get (voxels[0], "collision-count", &a, NULL);
-    g_object_get (voxels[1], "collision-count", &b, NULL);
-    g_print ("COLISION %d %d\n", a, b);
-  }
-
   max_dim = 1;
   max_iter = 1;
   g_object_set (self, 
@@ -65,6 +49,20 @@ main (int argc, char *argv[])
       "num-thread", 4, 
       "work-func", thread_test, 
       NULL);
+
+  voxels = (OpticVoxel **)g_malloc0 (sizeof (OpticVoxel *) * 2);
+  for (iter = 0; iter < 2; iter++) {
+    voxels[iter] = g_object_new (OPTIC_TYPE_VOXEL, NULL); 
+  }
+  g_object_set (voxels[0], "point", self, NULL);
+  g_object_set (voxels[1], "point", other, NULL);
+
+  res = optic_voxel_is_collision (G_OBJECT (voxels[0]), G_OBJECT (voxels[1]), 2);
+  if (res) {
+    g_object_get (voxels[0], "collision-count", &a, NULL);
+    g_object_get (voxels[1], "collision-count", &b, NULL);
+    g_print ("COLISION %d %d\n", a, b);
+  }
 
   optic_threadpool_hire_workers (threadpool);
   optic_tensor_add (self, 1.0);

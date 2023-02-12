@@ -28,12 +28,19 @@ G_DEFINE_TYPE_WITH_PRIVATE (OpticCollisionObject, optic_collision_object, G_TYPE
 static void 
 optic_collision_object_dispose (GObject *object)
 {
+  OpticCollisionObject *self = (OpticCollisionObject *)object;
+  OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (self);
+  g_object_unref (priv->point);
   G_OBJECT_CLASS (optic_collision_object_parent_class)->dispose (object); 
 }
 
 static void
 optic_collision_object_finalize (GObject *object)
 {
+  OpticCollisionObject *self = (OpticCollisionObject *)object;
+  OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (self);
+  priv->point = NULL;
+  priv->collision_count = 0;
   G_OBJECT_CLASS (optic_collision_object_parent_class)->finalize (object);
 }
 
@@ -68,15 +75,10 @@ optic_collision_object_set_property (GObject *object,
   OpticCollisionObject *self = OPTIC_COLLISION_OBJECT (object);
   OpticCollisionObjectPrivate *priv = optic_collision_object_get_instance_private (self);
   gpointer pointer = NULL;
-  gint64 shape[1] = { 3 }; /* TODO */
   switch (property_id) {
     case PROP_COLLISION_OBJECT_POINT:
       pointer = g_value_get_pointer (value);
-      g_object_set (priv->point, 
-          "dim", 1,
-          "shape", shape,
-          "dtype", G_TYPE_FLOAT,
-          "data", pointer, NULL);
+      priv->point = (OpticTensor *)pointer;
       break;
     default:
       break;
@@ -91,6 +93,8 @@ optic_collision_object_class_init (OpticCollisionObjectClass *klass)
 
   gobject_class->set_property = optic_collision_object_set_property;
   gobject_class->get_property = optic_collision_object_get_property;
+  gobject_class->dispose = optic_collision_object_dispose;
+  gobject_class->finalize = optic_collision_object_finalize;
 
   klass->collision_signal_default_handler = optic_collision_object_default_signal_callback;
   klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT] = g_signal_new ("collision",
