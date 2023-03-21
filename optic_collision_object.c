@@ -6,7 +6,7 @@ enum _OpticCollisionObjectSignal {
 } OpticCollisionObjectSignal;
 
 gboolean optic_collision_object_default_is_collision (OpticCollisionObject *self, 
-    OpticCollisionObject *other, gfloat threshold);
+    OpticCollisionObject *other);
 
 gboolean optic_collision_object_update_state_default_func (OpticCollisionObject *self);
 
@@ -138,22 +138,21 @@ optic_collision_object_default_signal_callback (OpticCollisionObject *self,
 
 gboolean
 optic_collision_object_default_is_collision (OpticCollisionObject *self, 
-    OpticCollisionObject *other, gfloat threshold)
+    OpticCollisionObject *other)
 {
   gboolean res = 1;
-  gfloat dest = 0;
+  OpticTensor *mdiff = NULL;
   OpticCollisionObjectPrivate *self_priv = optic_collision_object_get_instance_private (self);
   OpticCollisionObjectPrivate *other_priv = optic_collision_object_get_instance_private (self);
   OpticCollisionObjectClass *klass = OPTIC_COLLISION_OBJECT_GET_CLASS (self);
 
-  dest = optic_tensor_distance (self_priv->point, other_priv->point);
+  mdiff = optic_tensor_get_minkowski_difference (self_priv->point, other_priv->point);
 
-  /* TODO criteria of collision */
-  if (dest <= threshold) {
-    g_signal_emit (self, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
-    g_signal_emit (other, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
-    res = 1;
-  }
+  /* TODO criteria of collision 
+   * impl GJK */
+  g_signal_emit (self, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
+  g_signal_emit (other, klass->signals[OPTIC_COLLISION_OBJECT_SIGNAL_DEFAULT], NULL);
+  res = 1;
   return res;
 }
 

@@ -136,6 +136,7 @@ optic_tensor_init (OpticTensor *instance)
   instance->tensor = NULL;
 }
 
+/* TODO is it useful? */
 gfloat 
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {
@@ -176,6 +177,13 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
   }
   
   return sqrt(res);
+}
+
+OpticTensor *
+optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other)
+{
+  OpticTensor *minkowski_difference = NULL;
+  return minkowski_difference;
 }
 
 gfloat

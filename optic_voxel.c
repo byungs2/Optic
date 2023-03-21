@@ -35,6 +35,6 @@ optic_voxel_is_collision (GObject *self,
   gboolean res = 1;
   OpticCollisionObjectClass *klass = OPTIC_COLLISION_OBJECT_GET_CLASS (self);
   res = klass->is_collision (OPTIC_COLLISION_OBJECT (self), 
-      OPTIC_COLLISION_OBJECT (other), threshold);
+      OPTIC_COLLISION_OBJECT (other));
   return res;
 }

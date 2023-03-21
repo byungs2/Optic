@@ -9,14 +9,19 @@ struct x {
   double c;
 };
 
+void *a;
+
+void
+test ()
+{
+  a = (void *) 20;
+}
+
 int 
 main (int argc, char *argv[])
 {
-  int a = 0;
-  int *b = (int *)malloc (sizeof(int) * 1);
-  *b = 16;
-  size_t offset = offsetof (struct x, b);
-  printf ("%ld\n", offset);
-  printf ("%ld\n", G_TYPE_INT);
+  test ();
+  g_print (" %d \n", 
+      (int) (long)a);
   return 0;
 }
