@@ -37,7 +37,13 @@ GType optic_tensor_get_type (void);
 /* cal euclidean distance */
 gfloat optic_tensor_distance (OpticTensor *self, OpticTensor *other); 
 
-OpticTensor *optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other);
+OpticTensor *optic_tensor_get_farthest_point_in_direction (OpticTensor *self, OpticTensor *direction);
+
+OpticTensor *optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other, OpticTensor *direction);
+
+OpticTensor *optic_tensor_subtract (OpticTensor *p1, OpticTensor *p2);
+
+void optic_tensor_negative (OpticTensor *self);
 
 void optic_tensor_mul (OpticTensor *self, gfloat constant);
 

@@ -179,11 +179,28 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
   return sqrt(res);
 }
 
+/* TODO */
 OpticTensor *
-optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other)
+optic_tensor_get_farthest_point_in_direction (OpticTensor *self, OpticTensor *direction)
 {
-  OpticTensor *minkowski_difference = NULL;
-  return minkowski_difference;
+  OpticTensor *res = NULL;
+
+  return NULL;
+}
+
+OpticTensor *
+optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other, OpticTensor *direction)
+{
+  OpticTensor *p1 = NULL;
+  OpticTensor *p2 = NULL;
+  OpticTensor *p3 = NULL;
+
+  p1 = optic_tensor_get_farthest_point_in_direction (self, direction);
+  optic_tensor_negative (direction);
+  p2 = optic_tensor_get_farthest_point_in_direction (self, direction);
+  p3 = optic_tensor_subtract (p1, p2);
+
+  return p3;
 }
 
 gfloat
@@ -321,4 +338,51 @@ optic_tensor_add (OpticTensor *self, gfloat constant)
   for (; i > 0; i--) {
     tmp_self[i-1] += constant;
   }
+}
+
+/* TODO */
+OpticTensor *
+optic_tensor_subtract (OpticTensor *p1, OpticTensor *p2)
+{
+  OpticTensor *res = NULL;
+  gint i = 0, iter = 0;
+  gfloat tmp = 0.0;
+  gfloat *tmp_self = NULL, *tmp_other = NULL;
+  __m256 self_tensor, other_tensor, dest, mul;
+
+  /* TODO need to check shape too */
+  g_assert (p1->dim_size == p2->dim_size 
+      && p1->tensor != NULL && p2->tensor != NULL);
+
+  iter = p1->length/8;
+
+  tmp_self = (gfloat *)p1->tensor;
+  tmp_other = (gfloat *)p2->tensor;
+
+  for (i = 0; i < iter; i++) {
+    self_tensor = _mm256_loadu_ps (tmp_self);
+    other_tensor = _mm256_loadu_ps (tmp_other);
+    dest = _mm256_sub_ps (self_tensor, other_tensor);
+
+    tmp_self += 8;
+    tmp_other += 8;
+  }
+  for (i = 0; iter > 0 && i < 8; i++) {
+    res += ((gfloat *)&dest)[i];
+  }
+
+  i = self->length%8;
+  for (; i > 0; i--) {
+    tmp = tmp_self[i-1] * tmp_other[i-1];
+    res += tmp;
+  }
+
+  return res;
+}
+
+/* TODO */
+void
+optic_tensor_negative (OpticTensor *self)
+{
+  OpticTensor *res = NULL;
 }
