@@ -2,7 +2,19 @@
 #include <immintrin.h>
 #include "include/optic_tensor.h"
 
-G_DEFINE_TYPE (OpticTensor, optic_tensor, OPTIC_TYPE_OBJECT)
+typedef struct _OpticTensorPrivate OpticTensorPrivate;
+
+struct _OpticTensorPrivate {
+  gfloat *tensor;
+  guint64 *shape;
+  guint64 length;
+  guint dim_size;
+  guint dtype;
+};
+
+static void optic_tensor_free (OpticTensor *self);
+
+G_DEFINE_TYPE_WITH_PRIVATE (OpticTensor, optic_tensor, OPTIC_TYPE_OBJECT)
 
 enum {
   PROP_0 = 0,
@@ -22,6 +34,11 @@ optic_tensor_dispose (GObject *object)
 static void
 optic_tensor_finalize (GObject *object)
 {
+  OpticTensor *self = NULL;
+
+  self = OPTIC_TENSOR (object);
+
+  optic_tensor_free (self);
   G_OBJECT_CLASS (optic_tensor_parent_class)->finalize (object);
 }
 
@@ -31,46 +48,7 @@ optic_tensor_set_property (GObject *object,
     const GValue *value, 
     GParamSpec *pspec)
 {
-  gint i;
-  gpointer pointer;
-  OpticTensor *self = OPTIC_TENSOR (object);
   switch (property_id) {
-    case PROP_TENSOR_DIM:
-      self->dim_size = g_value_get_int (value);
-      if (self->shape != NULL) {
-        g_free (self->shape);
-        self->shape = NULL;
-      }
-      self->shape = (guint64 *)g_malloc0 (sizeof(guint64) * self->dim_size);
-      break;
-    case PROP_TENSOR_DATA:
-      pointer = g_value_get_pointer (value);
-      if (self->tensor != NULL) {
-        g_free (self->tensor);
-        self->tensor = NULL;
-      }
-      /* TODO maximum single malloc size is INT 
-       * need to make fragment of tensor array
-       * as its shape
-       * */
-      self->tensor = (gfloat *)g_malloc0 (sizeof(gfloat) * self->length);
-      if (pointer != NULL) {
-        for (i = 0; i < self->length; i++) {
-          self->tensor[i] = ((gfloat *)pointer)[i];
-        }
-      }
-      break;
-    case PROP_TENSOR_SHAPE:
-      pointer = g_value_get_pointer (value);
-      self->length = 1;
-      for (i = 0; i < self->dim_size; i++) {
-        self->shape[i] = ((guint64 *)pointer)[i];
-        self->length *= self->shape[i];
-      }
-      break;
-    case PROP_TENSOR_TYPE:
-      self->dtype = g_value_get_int (value);
-      break;
     default:
       break;
   }
@@ -83,18 +61,19 @@ optic_tensor_get_property (GObject *object,
     GParamSpec *pspec)
 {
   OpticTensor *self = OPTIC_TENSOR (object);
+  OpticTensorPrivate *priv = optic_tensor_get_instance_private (self);
   switch (property_id) {
     case PROP_TENSOR_DIM:
-      g_value_set_int (value, self->dim_size);
+      g_value_set_int (value, priv->dim_size);
       break;
     case PROP_TENSOR_DATA:
-      g_value_set_pointer (value, self->tensor);
+      g_value_set_pointer (value, priv->tensor);
       break;
     case PROP_TENSOR_SHAPE:
-      g_value_set_pointer (value, self->shape);
+      g_value_set_pointer (value, priv->shape);
       break;
     case PROP_TENSOR_TYPE:
-      g_value_set_int (value, self->dtype);
+      g_value_set_int (value, priv->dtype);
       break;
     default:
       break;
@@ -129,30 +108,38 @@ optic_tensor_class_init (OpticTensorClass *klass)
 static void
 optic_tensor_init (OpticTensor *instance)
 {
-  instance->dim_size = 0;
-  instance->length = 0;
-  instance->dtype = G_TYPE_FLOAT;
-  instance->shape = NULL;
-  instance->tensor = NULL;
+  OpticTensorPrivate *priv = NULL;
+
+  priv = optic_tensor_get_instance_private (instance);
+  priv->dim_size = 0;
+  priv->length = 0;
+  priv->dtype = G_TYPE_FLOAT;
+  priv->shape = NULL;
+  priv->tensor = NULL;
 }
 
 /* TODO is it useful? */
 gfloat 
 optic_tensor_distance (OpticTensor *self, OpticTensor *other)
 {
-  gint i = 0, iter = 0;
+  gint i = 0, iter = 0, count = 0;
   gfloat res = 0.0, tmp = 0.0;
-  gfloat *tmp_self = NULL, *tmp_other = NULL;
+  gfloat *tmp_self = NULL, *tmp_other = NULL, *tmp_distance = NULL;
   __m256 self_tensor, other_tensor, dest, distance;
 
+  OpticTensorPrivate *self_priv = NULL, *other_priv = NULL;
+
+  self_priv = optic_tensor_get_instance_private (self);
+  other_priv = optic_tensor_get_instance_private (other);
+
   /* TODO need to check shape too */
-  g_assert (self->dim_size == other->dim_size 
-      && self->tensor != NULL && other->tensor != NULL);
+  g_assert (self_priv->dim_size == other_priv->dim_size 
+      && self_priv->tensor != NULL && other_priv->tensor != NULL);
 
-  iter = self->length/8;
+  iter = self_priv->length/8;
 
-  tmp_self = (gfloat *)self->tensor;
-  tmp_other = (gfloat *)other->tensor;
+  tmp_self = (gfloat *)self_priv->tensor;
+  tmp_other = (gfloat *)other_priv->tensor;
   distance = _mm256_set1_ps (0.0);
 
   for (i = 0; i < iter; i++) {
@@ -169,7 +156,7 @@ optic_tensor_distance (OpticTensor *self, OpticTensor *other)
     res += ((gfloat *)&distance)[i];
   }
 
-  i = self->length%8;
+  i = self_priv->length%8;
   for (; i > 0; i--) {
     tmp = tmp_self[i-1] - tmp_other[i-1];
     tmp *= tmp;
@@ -203,6 +190,7 @@ optic_tensor_get_minkowski_difference (OpticTensor *self, OpticTensor *other, Op
   return p3;
 }
 
+/* TODO */
 gfloat
 optic_tensor_dot (OpticTensor *self, OpticTensor *other)
 {
@@ -212,14 +200,19 @@ optic_tensor_dot (OpticTensor *self, OpticTensor *other)
   gfloat *tmp_self = NULL, *tmp_other = NULL;
   __m256 self_tensor, other_tensor, dest, mul;
 
+  OpticTensorPrivate *self_priv = NULL, *other_priv = NULL;
+
+  self_priv = optic_tensor_get_instance_private (self);
+  other_priv = optic_tensor_get_instance_private (other);
+
   /* TODO need to check shape too */
-  g_assert (self->dim_size == other->dim_size 
-      && self->tensor != NULL && other->tensor != NULL);
+  g_assert (self_priv->dim_size == other_priv->dim_size 
+      && self_priv->tensor != NULL && other_priv->tensor != NULL);
 
-  iter = self->length/8;
+  iter = self_priv->length/8;
 
-  tmp_self = (gfloat *)self->tensor;
-  tmp_other = (gfloat *)other->tensor;
+  tmp_self = (gfloat *)self_priv->tensor;
+  tmp_other = (gfloat *)other_priv->tensor;
   dest = _mm256_set1_ps (0.0);
 
   for (i = 0; i < iter; i++) {
@@ -235,7 +228,7 @@ optic_tensor_dot (OpticTensor *self, OpticTensor *other)
     res += ((gfloat *)&dest)[i];
   }
 
-  i = self->length%8;
+  i = self_priv->length%8;
   for (; i > 0; i--) {
     tmp = tmp_self[i-1] * tmp_other[i-1];
     res += tmp;
@@ -257,17 +250,20 @@ optic_tensor_outer (OpticTensor *self, OpticTensor *other, OpticTensor *dest)
 }
 
 void 
-optic_tensor_mul (OpticTensor *self, gfloat constant)
+optic_tensor_mul_scalar (OpticTensor *self, gfloat constant)
 {
   gint i = 0;
   gfloat *tmp_self = NULL;
   __m256 self_tensor, dest, cnst;
+  OpticTensorPrivate *self_priv = NULL;
 
-  g_assert (self->tensor != NULL);
+  self_priv = optic_tensor_get_instance_private (self);
 
-  i = self->length/8;
+  g_assert (self_priv->tensor != NULL);
 
-  tmp_self = (gfloat *)self->tensor;
+  i = self_priv->length/8;
+
+  tmp_self = (gfloat *)self_priv->tensor;
   cnst = _mm256_set1_ps (constant);
 
   for (; i > 0; i--) {
@@ -278,24 +274,27 @@ optic_tensor_mul (OpticTensor *self, gfloat constant)
     tmp_self += 8;
   }
 
-  i = self->length%8;
+  i = self_priv->length%8;
   for (; i > 0; i--) {
     tmp_self[i-1] *= constant;
   }
 }
 
 void 
-optic_tensor_div (OpticTensor *self, gfloat constant)
+optic_tensor_div_scalar (OpticTensor *self, gfloat constant)
 {
   gint i = 0;
   gfloat *tmp_self = NULL;
   __m256 self_tensor, dest, cnst;
+  OpticTensorPrivate *self_priv = NULL;
 
   g_assert (constant != 0);
 
-  i = self->length/8;
+  self_priv = optic_tensor_get_instance_private (self);
 
-  tmp_self = (gfloat *)self->tensor;
+  i = self_priv->length/8;
+
+  tmp_self = (gfloat *)self_priv->tensor;
   cnst = _mm256_set1_ps (constant);
 
   for (; i > 0; i--) {
@@ -306,24 +305,26 @@ optic_tensor_div (OpticTensor *self, gfloat constant)
     tmp_self += 8;
   }
 
-  i = self->length%8;
+  i = self_priv->length%8;
   for (; i > 0; i--) {
     tmp_self[i-1] /= constant;
   }
 }
 
 void 
-optic_tensor_add (OpticTensor *self, gfloat constant)
+optic_tensor_add_scalar (OpticTensor *self, gfloat constant)
 {
   gint i = 0;
   gfloat *tmp_self = NULL;
   __m256 self_tensor, dest, cnst;
+  OpticTensorPrivate *self_priv = NULL;
 
   g_assert (constant != 0);
 
-  i = self->length/8;
+  self_priv = optic_tensor_get_instance_private (self);
+  i = self_priv->length/8;
 
-  tmp_self = (gfloat *)self->tensor;
+  tmp_self = (gfloat *)self_priv->tensor;
   cnst = _mm256_set1_ps (constant);
 
   for (; i > 0; i--) {
@@ -334,7 +335,7 @@ optic_tensor_add (OpticTensor *self, gfloat constant)
     tmp_self += 8;
   }
 
-  i = self->length%8;
+  i = self_priv->length%8;
   for (; i > 0; i--) {
     tmp_self[i-1] += constant;
   }
@@ -350,14 +351,19 @@ optic_tensor_subtract (OpticTensor *p1, OpticTensor *p2)
   gfloat *tmp_self = NULL, *tmp_other = NULL;
   __m256 self_tensor, other_tensor, dest, mul;
 
+  OpticTensorPrivate *p1_priv = NULL, *p2_priv = NULL;
+
+  p1_priv = optic_tensor_get_instance_private (p1);
+  p2_priv = optic_tensor_get_instance_private (p2);
+
   /* TODO need to check shape too */
-  g_assert (p1->dim_size == p2->dim_size 
-      && p1->tensor != NULL && p2->tensor != NULL);
+  g_assert (p1_priv->dim_size == p2_priv->dim_size 
+      && p1_priv->tensor != NULL && p2_priv->tensor != NULL);
 
-  iter = p1->length/8;
+  iter = p1_priv->length/8;
 
-  tmp_self = (gfloat *)p1->tensor;
-  tmp_other = (gfloat *)p2->tensor;
+  tmp_self = (gfloat *)p1_priv->tensor;
+  tmp_other = (gfloat *)p2_priv->tensor;
 
   for (i = 0; i < iter; i++) {
     self_tensor = _mm256_loadu_ps (tmp_self);
@@ -366,15 +372,6 @@ optic_tensor_subtract (OpticTensor *p1, OpticTensor *p2)
 
     tmp_self += 8;
     tmp_other += 8;
-  }
-  for (i = 0; iter > 0 && i < 8; i++) {
-    res += ((gfloat *)&dest)[i];
-  }
-
-  i = self->length%8;
-  for (; i > 0; i--) {
-    tmp = tmp_self[i-1] * tmp_other[i-1];
-    res += tmp;
   }
 
   return res;
@@ -385,4 +382,48 @@ void
 optic_tensor_negative (OpticTensor *self)
 {
   OpticTensor *res = NULL;
+}
+
+OpticTensor *
+optic_tensor_new_with_template (gpointer data, OpticTensorTemplate *tmpl)
+{
+  OpticTensor *new_tensor = NULL;
+  OpticTensorPrivate *priv = NULL;
+  gchar **shape = NULL;
+  gint i = 0, tmp = 1;
+
+  new_tensor = g_object_new (OPTIC_TYPE_TENSOR, NULL);
+  priv = optic_tensor_get_instance_private (new_tensor);
+
+  shape = g_strsplit (tmpl->shape, ":", -1);
+  priv->dim_size = g_strv_length (shape);
+  priv->dtype = tmpl->dtype;
+
+  priv->shape = (guint64 *)g_malloc0 (sizeof (guint64) * priv->dim_size);
+
+  for (i = 0; i < priv->dim_size; i++) {
+    priv->shape[i] = atoi (shape[i]);
+    tmp *= priv->shape[i];
+  }
+
+  priv->length = tmp;
+
+  if (data != NULL) {
+    priv->tensor = g_memdup (data, sizeof (gfloat) * priv->length);
+  } else {
+    priv->tensor = (gfloat *)g_malloc0 (sizeof (gfloat) * priv->length);
+  }
+
+  g_strfreev (shape);
+  return new_tensor;
+}
+
+void
+optic_tensor_free (OpticTensor *self)
+{
+  OpticTensorPrivate *priv = NULL;
+
+  priv = optic_tensor_get_instance_private (self);
+  g_free (priv->shape);
+  g_free (priv->tensor);
 }

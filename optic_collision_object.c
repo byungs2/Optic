@@ -146,7 +146,7 @@ optic_collision_object_default_is_collision (OpticCollisionObject *self,
   OpticCollisionObjectPrivate *other_priv = optic_collision_object_get_instance_private (self);
   OpticCollisionObjectClass *klass = OPTIC_COLLISION_OBJECT_GET_CLASS (self);
 
-  mdiff = optic_tensor_get_minkowski_difference (self_priv->point, other_priv->point);
+  mdiff = optic_tensor_get_minkowski_difference (self_priv->point, other_priv->point, other_priv->point);
 
   /* TODO criteria of collision 
    * impl GJK */
