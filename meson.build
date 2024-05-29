@@ -54,11 +54,15 @@ foreach extra_arg : warning_c_flags
   endif
 endforeach
 
-cv4 = dependency('opencv4_arm')
+cv4 = dependency('opencv4')
+v4l2 = dependency('libv4l2')
 
 optic = executable('optic',
   'main.cc',
   dependencies: [
     cv4,
+    v4l2,
+  ],
+  link_with: [
   ],
 )
