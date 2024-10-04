@@ -18,6 +18,8 @@
 
 #include <linux/videodev2.h>
 
+// V4L2_PIX_FMT_SBGGR10
+// V4L2_COLORSPACE_SMPTE240M
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
 struct buffer {
@@ -30,9 +32,10 @@ main (int argc, char *argv[])
 {
   const char *dev_name = "/dev/video0";
   unsigned int index = 0;
+  unsigned int j = 0;
   int fd = 0;
   int ret = 0;
-  int size_plane = 1;
+  int num_plane = 0;
   static int outbuf = 1;
   struct v4l2_format fmt;
   struct v4l2_requestbuffers req;
@@ -49,7 +52,6 @@ main (int argc, char *argv[])
 
   fd = open (dev_name, O_RDWR, 0);
   output = fopen ("output.bin", "wb");
-
   /* CHECK CAPS */
   ret = ioctl (fd, VIDIOC_QUERYCAP, &cap);
   if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE_MPLANE)) {
@@ -62,6 +64,7 @@ main (int argc, char *argv[])
 
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
   ret = ioctl (fd, VIDIOC_G_FMT, &fmt);
+  num_plane = fmt.fmt.pix_mp.num_planes;
 
   CLEAR (req);
   req.count = 4;
@@ -74,29 +77,35 @@ main (int argc, char *argv[])
   }
 
   /* ALLOC & INIT MEM */
-  buffers = (struct buffer *)calloc (req.count, sizeof (*buffers));
+  buffers = (struct buffer *)calloc (req.count * num_plane, sizeof (*buffers));
   if (!buffers) {
     printf ("OOM\n");
   } else {
     printf ("BUF ALLOC OK %d\n", req.count);
   }
 
-  planes = (struct v4l2_plane *)calloc (size_plane, sizeof (*planes));
-  out_planes = (struct v4l2_plane *)calloc (size_plane, sizeof (*planes));
-
   for (index = 0; index < req.count; index++) {
     struct v4l2_buffer buf;
     CLEAR (buf);
+    //planes = (struct v4l2_plane *)calloc (num_plane, sizeof (*planes));
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
     buf.memory = V4L2_MEMORY_MMAP;
     buf.index = index;
     buf.m.planes = planes;
-    buf.length = size_plane;
+    buf.length = num_plane;
 
     ret = ioctl (fd, VIDIOC_QUERYBUF, &buf);
     printf ("%d %d\n", ret, errno);
-    buffers[index].length = buf.length;
-    buffers[index].start = mmap (NULL, buf.m.planes[0].length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.planes[0].m.mem_offset);
+    for (j = 0; j < num_plane; j++) {
+      buffers[index * num_plane + j].length = buf.m.planes[j].length;
+      buffers[index * num_plane + j].start = mmap (NULL,
+		      buf.m.planes[j].length,
+		      PROT_READ | PROT_WRITE,
+		      MAP_SHARED,
+		      fd,
+		      buf.m.planes[j].m.mem_offset);
+    }
+
     if (MAP_FAILED == buffers[index].start) {
       fprintf (stderr, "%s error %d, %s\n", "mmap", errno, strerror(errno));
     } else {
@@ -108,11 +117,12 @@ main (int argc, char *argv[])
   for (index = 0; index < req.count; index++) {
     struct v4l2_buffer buf;
     CLEAR (buf);
+    planes = (struct v4l2_plane *)calloc (num_plane, sizeof (*planes));
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
     buf.memory = V4L2_MEMORY_MMAP;
     buf.index = index;
     buf.m.planes = planes;
-    buf.length = size_plane;
+    buf.length = num_plane;
     ret = ioctl (fd, VIDIOC_QBUF, &buf);
     printf ("%d %d\n", ret, errno);
   }
@@ -135,8 +145,9 @@ main (int argc, char *argv[])
   CLEAR (buf);
   buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
   buf.memory = V4L2_MEMORY_MMAP;
+  out_planes = (struct v4l2_plane *)calloc (num_plane, sizeof (*planes));
   buf.m.planes = out_planes;
-  buf.length = size_plane;
+  buf.length = num_plane;
 
   ret = ioctl (fd, VIDIOC_DQBUF, &buf);
   printf ("DEQ %d %d %d\n", ret, buf.bytesused, errno);
@@ -167,6 +178,19 @@ main (int argc, char *argv[])
   ret = close (fd);
   fclose (output);
   printf ("%d\n", ret);
+  printf ("%d %d %d %d %d %d %d %d %d %d %d %d\n",
+		  V4L2_COLORSPACE_DEFAULT,
+		  V4L2_COLORSPACE_SMPTE170M,
+		  V4L2_COLORSPACE_REC709,
+		  V4L2_COLORSPACE_SRGB,
+		  V4L2_COLORSPACE_ADOBERGB,
+		  V4L2_COLORSPACE_BT2020,
+		  V4L2_COLORSPACE_DCI_P3,
+		  V4L2_COLORSPACE_SMPTE240M,
+		  V4L2_COLORSPACE_470_SYSTEM_M,
+		  V4L2_COLORSPACE_470_SYSTEM_BG,
+		  V4L2_COLORSPACE_JPEG,
+		  V4L2_COLORSPACE_RAW);
   std::cout << ret << std::endl;
   return 0;
 }
