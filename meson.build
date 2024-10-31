@@ -54,15 +54,30 @@ foreach extra_arg : warning_c_flags
   endif
 endforeach
 
+add_project_arguments('-g', language : 'cpp')
+add_project_arguments('-g', language : 'c')
+
 cv4 = dependency('opencv4')
 v4l2 = dependency('libv4l2')
+rknnapi = dependency('rknn_api')
+rga = dependency('rga')
+cvm_inc = include_directories('./opencv-mobile-4.10.0-luckfox-pico/include/opencv4')
+cvm_core = cxx.find_library('opencv_core', dirs: '/home/byunghun/workspace/luckfox_app/opencv-mobile-4.10.0-luckfox-pico/lib')
+cvm_img = cxx.find_library('opencv_imgproc', dirs: '/home/byunghun/workspace/luckfox_app/opencv-mobile-4.10.0-luckfox-pico/lib')
+cvm_high = cxx.find_library('opencv_highgui', dirs: '/home/byunghun/workspace/luckfox_app/opencv-mobile-4.10.0-luckfox-pico/lib')
 
 optic = executable('optic',
   'main.cc',
   dependencies: [
     cv4,
     v4l2,
+    rknnapi,
+    rga,
+    cvm_core,
+    cvm_img,
+    cvm_high,
   ],
   link_with: [
   ],
+  include_directories: cvm_inc,
 )

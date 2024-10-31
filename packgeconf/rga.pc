@@ -1,0 +1,12 @@
+# Package Information for pkg-config
+
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: rknn_api
+Description: Open Source Computer Vision Library
+Version: 1.6.0
+Libs: -L${exec_prefix}/lib -lrga
+Cflags: -I${includedir}

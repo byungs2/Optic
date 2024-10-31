@@ -1,0 +1,26 @@
+digraph board {
+	rankdir=TB
+	n00000001 [label="{{<port0> 0 | <port1> 1} | rkisp-isp-subdev\n/dev/v4l-subdev3 | {<port2> 2 | <port3> 3}}", shape=Mrecord, style=filled, fillcolor=green]
+	n00000001:port2 -> n00000006
+	n00000001:port2 -> n0000000c
+	n00000001:port2 -> n00000012
+	n00000001:port2 -> n00000018
+	n00000001:port2 -> n0000001e
+	n00000001:port2 -> n00000024
+	n00000001:port3 -> n00000036
+	n00000006 [label="rkisp_mainpath\n/dev/video11", shape=box, style=filled, fillcolor=yellow]
+	n0000000c [label="rkisp_selfpath\n/dev/video12", shape=box, style=filled, fillcolor=yellow]
+	n00000012 [label="rkisp_bypasspath\n/dev/video13", shape=box, style=filled, fillcolor=yellow]
+	n00000018 [label="rkisp_mainpath_4x4sampling\n/dev/video14", shape=box, style=filled, fillcolor=yellow]
+	n0000001e [label="rkisp_bypasspath_4x4sampling\n/dev/video15", shape=box, style=filled, fillcolor=yellow]
+	n00000024 [label="rkisp_lumapath\n/dev/video16", shape=box, style=filled, fillcolor=yellow]
+	n0000002a [label="rkisp_rawrd0_m\n/dev/video17", shape=box, style=filled, fillcolor=yellow]
+	n0000002a -> n00000001:port0 [style=dashed]
+	n00000030 [label="rkisp_rawrd2_s\n/dev/video18", shape=box, style=filled, fillcolor=yellow]
+	n00000030 -> n00000001:port0 [style=dashed]
+	n00000036 [label="rkisp-statistics\n/dev/video19", shape=box, style=filled, fillcolor=yellow]
+	n0000003c [label="rkisp-input-params\n/dev/video20", shape=box, style=filled, fillcolor=yellow]
+	n0000003c -> n00000001:port1
+	n00000042 [label="{{} | rkcif-mipi-lvds\n/dev/v4l-subdev4 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+	n00000042:port0 -> n00000001:port0
+}
